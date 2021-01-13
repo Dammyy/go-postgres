@@ -10,7 +10,7 @@ import (
     "net/http"
     "strconv"
     "encoding/json"
-
+    "github.com/rs/cors"
     "github.com/gorilla/mux"
     _ "github.com/lib/pq"
 )
@@ -18,11 +18,6 @@ import (
 type App struct {
     Router *mux.Router
     DB     *sql.DB
-}
-
-func enableCors(w *http.ResponseWriter) {
-    (*w).Header().Set("Access-Control-Allow-Origin", "*")
-    (*w).Header().Set("Content-Type", "text/html; charset=utf-8")
 }
 
 func (a *App) Initialize(user, password, dbname string) {
@@ -41,11 +36,11 @@ func (a *App) Initialize(user, password, dbname string) {
 }
 
 func (a *App) Run(addr string) {
-    log.Fatal(http.ListenAndServe(":8010", a.Router))
+    handler := cors.Default().Handler(a.Router)
+    log.Fatal(http.ListenAndServe(":8010", handler))
 }
 
 func (a *App) getSession(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
     vars := mux.Vars(r)
     id, err := strconv.Atoi(vars["id"])
     if err != nil {
@@ -67,7 +62,6 @@ func (a *App) getSession(w http.ResponseWriter, r *http.Request) {
     respondWithJSON(w, http.StatusOK, p)
 }
 
-
 func respondWithError(w http.ResponseWriter, code int, message string) {
     respondWithJSON(w, code, map[string]string{"error": message})
 }
@@ -81,12 +75,11 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 func (a *App) getSessions(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
     count, _ := strconv.Atoi(r.FormValue("count"))
     start, _ := strconv.Atoi(r.FormValue("start"))
 
-    if count > 10 || count < 1 {
-        count = 10
+    if count > 50 || count < 1 {
+        count = 50
     }
     if start < 0 {
         start = 0
@@ -102,7 +95,6 @@ func (a *App) getSessions(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) createSession(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
     var p session
     decoder := json.NewDecoder(r.Body)
     if err := decoder.Decode(&p); err != nil {
@@ -120,7 +112,6 @@ func (a *App) createSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) updateSession(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
     vars := mux.Vars(r)
     id, err := strconv.Atoi(vars["id"])
     if err != nil {
@@ -146,7 +137,6 @@ func (a *App) updateSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) deleteSession(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
     vars := mux.Vars(r)
     id, err := strconv.Atoi(vars["id"])
     if err != nil {
