@@ -48,8 +48,8 @@ func (a *App) getSession(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    p := session{ID: id}
-    if err := p.getSession(a.DB); err != nil {
+    s := session{ID: id}
+    if err := s.getSession(a.DB); err != nil {
         switch err {
         case sql.ErrNoRows:
             respondWithError(w, http.StatusNotFound, "Session not found")
@@ -59,7 +59,7 @@ func (a *App) getSession(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    respondWithJSON(w, http.StatusOK, p)
+    respondWithJSON(w, http.StatusOK, s)
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
@@ -95,20 +95,20 @@ func (a *App) getSessions(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) createSession(w http.ResponseWriter, r *http.Request) {
-    var p session
+    var s session
     decoder := json.NewDecoder(r.Body)
-    if err := decoder.Decode(&p); err != nil {
+    if err := decoder.Decode(&s); err != nil {
         respondWithError(w, http.StatusBadRequest, "Invalid request payload")
         return
     }
     defer r.Body.Close()
 
-    if err := p.createSession(a.DB); err != nil {
+    if err := s.createSession(a.DB); err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
     }
 
-    respondWithJSON(w, http.StatusCreated, p)
+    respondWithJSON(w, http.StatusCreated, s)
 }
 
 func (a *App) updateSession(w http.ResponseWriter, r *http.Request) {
@@ -119,21 +119,21 @@ func (a *App) updateSession(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    var p session
+    var s session
     decoder := json.NewDecoder(r.Body)
-    if err := decoder.Decode(&p); err != nil {
+    if err := decoder.Decode(&s); err != nil {
         respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
         return
     }
     defer r.Body.Close()
-    p.ID = id
+    s.ID = id
 
-    if err := p.updateSession(a.DB); err != nil {
+    if err := s.updateSession(a.DB); err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
     }
 
-    respondWithJSON(w, http.StatusOK, p)
+    respondWithJSON(w, http.StatusOK, s)
 }
 
 func (a *App) deleteSession(w http.ResponseWriter, r *http.Request) {
@@ -144,8 +144,8 @@ func (a *App) deleteSession(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    p := session{ID: id}
-    if err := p.deleteSession(a.DB); err != nil {
+    s := session{ID: id}
+    if err := s.deleteSession(a.DB); err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
     }

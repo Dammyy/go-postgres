@@ -14,29 +14,29 @@ type session struct {
     UpdatedAt string `json:"updated_at"`
 }
 
-func (p *session) getSession(db *sql.DB) error {
+func (s *session) getSession(db *sql.DB) error {
   return db.QueryRow("SELECT name, time FROM sessions WHERE id=$1",
-      p.ID).Scan(&p.Name, &p.Time)
+      s.ID).Scan(&s.Name, &s.Time)
 }
 
-func (p *session) updateSession(db *sql.DB) error {
+func (s *session) updateSession(db *sql.DB) error {
   _, err :=
       db.Exec("UPDATE sessions SET name=$1, time=$2 WHERE id=$3",
-          p.Name, p.Time, p.ID)
+          s.Name, s.Time, s.ID)
 
   return err
 }
 
-func (p *session) deleteSession(db *sql.DB) error {
-  _, err := db.Exec("DELETE FROM sessions WHERE id=$1", p.ID)
+func (s *session) deleteSession(db *sql.DB) error {
+  _, err := db.Exec("DELETE FROM sessions WHERE id=$1", s.ID)
 
   return err
 }
 
-func (p *session) createSession(db *sql.DB) error {
+func (s *session) createSession(db *sql.DB) error {
   err := db.QueryRow(
       "INSERT INTO sessions(name, time) VALUES($1, $2) RETURNING id",
-      p.Name, p.Time).Scan(&p.ID)
+      s.Name, s.Time).Scan(&s.ID)
 
   if err != nil {
       return err
@@ -59,11 +59,11 @@ func getSessions(db *sql.DB, start, count int) ([]session, error) {
   sessions := []session{}
 
   for rows.Next() {
-      var p session
-      if err := rows.Scan(&p.ID, &p.Name, &p.Time, &p.CreatedAt, &p.UpdatedAt); err != nil {
+      var s session
+      if err := rows.Scan(&s.ID, &s.Name, &s.Time, &s.CreatedAt, &s.UpdatedAt); err != nil {
           return nil, err
       }
-      sessions = append(sessions, p)
+      sessions = append(sessions, s)
   }
 
   return sessions, nil
