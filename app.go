@@ -48,7 +48,8 @@ func (a *App) Initialize(user, password, dbname string) {
 
 func (a *App) Run(addr string) {
     handler := cors.Default().Handler(a.Router)
-    log.Fatal(http.ListenAndServe(":8010", handler))
+    http.ListenAndServe(addr, handler)
+    log.Fatal(http.ListenAndServe(addr, handler))
 }
 
 func (a *App) getSession(w http.ResponseWriter, r *http.Request) {

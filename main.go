@@ -21,5 +21,10 @@ func main() {
 		os.Getenv("APP_DATABASE_PASSWORD"),
 		os.Getenv("APP_DATABASE_NAME"))
 
-	a.Run(":8010")
+    port := os.Getenv("PORT")
+    if err != nil {
+        port = "8010"
+    } 
+
+	a.Run(":" + port)
 }
