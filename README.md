@@ -8,10 +8,10 @@ This is a simple API to store and retrieve time traccking sessions for https://g
   `go build -o bin/time-sessions -v`
 
 ## Setting up the postgress DB
-create a postgress dabase and provide the details in a `.env` file.
+Create a postgress database and provide the details in a `.env` file.
 See `.env.example` for a list of values that have to be provided.
 
 
-## start the app
+## Start the app
  `bin/time-sessions`
  
