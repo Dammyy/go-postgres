@@ -19,6 +19,7 @@ func main() {
 	a.Initialize(os.Getenv("DATABASE_URL"))
 
 	port := os.Getenv("PORT")
+	log.Printf("THE PORT IS %s ", port)
     if err != nil {
         port = "8010"
     } 
