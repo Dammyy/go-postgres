@@ -45,7 +45,7 @@ func (a *App) Initialize(databaseUrl string) {
 
 func (a *App) Run(addr string) {
     handler := cors.Default().Handler(a.Router)
-    http.ListenAndServe(addr, nil)
+    http.ListenAndServe(addr, handler)
     log.Fatal(http.ListenAndServe(addr, handler))
 }
 
