@@ -22,12 +22,10 @@ type App struct {
     DB     *sql.DB
 }
 
-func (a *App) Initialize(user, password, dbname string) {
-    connectionString :=
-        fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
+func (a *App) Initialize(databaseUrl string) {
 
     var err error
-    a.DB, err = sql.Open("postgres", connectionString)
+    a.DB, err = sql.Open("postgres", databaseUrl)
     if err != nil {
         log.Fatal(err)
     }

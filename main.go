@@ -16,10 +16,13 @@ func main() {
 	}
 	
 	a := App{}
-	a.Initialize(
-		os.Getenv("APP_DATABASE_USERNAME"),
-		os.Getenv("APP_DATABASE_PASSWORD"),
-		os.Getenv("APP_DATABASE_NAME"))
+	a.Initialize(os.Getenv("DATABASE_URL"))
 
-	a.Run(":8010")
+	port := os.Getenv("PORT")
+
+    if port == "" {
+        port = "8010"
+	}
+	
+	a.Run(":" + port)
 }
