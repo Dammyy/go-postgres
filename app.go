@@ -45,8 +45,8 @@ func (a *App) Initialize(databaseUrl string) {
 
 func (a *App) Run(addr string) {
     handler := cors.Default().Handler(a.Router)
-    http.ListenAndServe(":"+addr, nil)
-    log.Fatal(http.ListenAndServe(":"+addr, handler))
+    http.ListenAndServe(addr, nil)
+    log.Fatal(http.ListenAndServe(addr, handler))
 }
 
 func (a *App) getSession(w http.ResponseWriter, r *http.Request) {
