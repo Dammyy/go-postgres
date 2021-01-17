@@ -3,6 +3,8 @@
 package main
 
 import (
+    "context"
+    "time"
     "database/sql"
     "fmt"
     "log"
@@ -30,8 +32,17 @@ func (a *App) Initialize(user, password, dbname string) {
         log.Fatal(err)
     }
 
-    a.Router = mux.NewRouter()
+    query := `CREATE TABLE IF NOT EXISTS sessions(id SERIAL PRIMARY KEY, name text, time text, created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP)`
+    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    res, err := a.DB.ExecContext(ctx, query)
+    if err != nil {
+        log.Printf("Error %s when creating table", err)
+        return
+    }
+    log.Printf("%s table created", res)
 
+    a.Router = mux.NewRouter()
     a.initializeRoutes()
 }
 
