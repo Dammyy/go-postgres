@@ -6,7 +6,6 @@ import (
     "context"
     "time"
     "database/sql"
-    "fmt"
     "log"
 
     "net/http"
